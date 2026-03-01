@@ -9,6 +9,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Zap, Dumbbell, User } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
+const TRAINER_CODE = "12345678910";
+
 export default function AuthPage() {
   const { signIn, signUp } = useAuth();
   const navigate = useNavigate();
@@ -24,6 +26,7 @@ export default function AuthPage() {
   const [regEmail, setRegEmail] = useState("");
   const [regPassword, setRegPassword] = useState("");
   const [regRole, setRegRole] = useState<"trainer" | "student">("student");
+  const [trainerCode, setTrainerCode] = useState("");
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,6 +42,10 @@ export default function AuthPage() {
     e.preventDefault();
     if (regPassword.length < 6) {
       toast({ title: "Error", description: "La contraseña debe tener al menos 6 caracteres", variant: "destructive" });
+      return;
+    }
+    if (regRole === "trainer" && trainerCode !== TRAINER_CODE) {
+      toast({ title: "Código inválido", description: "El código de entrenador no es correcto.", variant: "destructive" });
       return;
     }
     setLoading(true);
@@ -179,6 +186,25 @@ export default function AuthPage() {
                       </button>
                     </div>
                   </div>
+
+                  {/* Trainer validation code */}
+                  {regRole === "trainer" && (
+                    <div className="space-y-2">
+                      <Label htmlFor="trainer-code">Código de entrenador</Label>
+                      <Input
+                        id="trainer-code"
+                        type="password"
+                        placeholder="Ingresa el código de validación"
+                        value={trainerCode}
+                        onChange={(e) => setTrainerCode(e.target.value)}
+                        required
+                        className="bg-secondary/30 border-primary/30"
+                      />
+                      <p className="text-[11px] text-muted-foreground">
+                        Necesitas un código especial para registrarte como entrenador.
+                      </p>
+                    </div>
+                  )}
 
                   <Button type="submit" className="w-full" disabled={loading}>
                     {loading ? "Cargando..." : "Crear Cuenta"}
