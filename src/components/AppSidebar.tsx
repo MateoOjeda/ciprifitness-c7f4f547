@@ -95,6 +95,7 @@ export function AppSidebar() {
             <div className="text-xs text-muted-foreground truncate flex-1">
               {displayName}
             </div>
+            {isTrainer && <TrainerSettingsDialog />}
           </div>
         }
         <Button variant="ghost" size={collapsed ? "icon" : "sm"} className="w-full text-muted-foreground hover:text-destructive" onClick={signOut}>
